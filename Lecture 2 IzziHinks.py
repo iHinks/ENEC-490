@@ -9,6 +9,11 @@ data from EIA.gov
 '''
 # calculating average price from file
 with open('New_York_Harbor_Conventional_Gasoline_Regular_Spot_Price_FOB.csv', newline='') as f:
+    next(f)
+    next(f)
+    next(f)
+    next(f)
+    next(f)
     reader = csv.reader(f)
     the_numbers = [float(row[1]) for row in reader]
     average = sum(the_numbers) / len(the_numbers)
