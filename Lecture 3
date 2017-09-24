@@ -1,0 +1,65 @@
+import matplotlib.pyplot as plt
+import pandas as pd 
+import numpy as np
+
+# load data, specify sheet and number of rows to skip
+df_data = pd.read_excel('HenryHub.xls',sheetname ='Data 1',skiprows = [0,1])
+
+# renaming the very long price column name
+df_data.columns = ['date','price']
+
+def annual_profile(df_data):
+    
+    #number of years in record
+    num_years = int(len(df_data)/12)
+    
+    
+    #output matrix of zeros
+    output = np.zeros((12,num_years))
+    
+    #nested for loops
+    for i in range(0,num_years):
+        for j in range(0,12):
+            output[j,i] = df_data.loc[i*12+j,'price']
+    
+    #years considered    
+    years = range(1997,2017)
+    
+    #index of 2008
+    a = years.index(2008)
+    
+    #select data from 2008-present
+    m = output[:,a:]
+    
+    return m
+
+#call annual profile function
+x = annual_profile(df_data)
+
+#monthly stats function
+def monthly_stats(z):
+    output = np.zeros((12,2))
+    
+    for i in range(0,1):
+        for j in range(0,12):
+            output[j,0]=np.average(z[j,:])
+            output[j,1]=np.std(z[j,:])
+        return output
+    
+y = monthly_stats(x)
+            
+
+#Synthetic random sample for April 
+synA=np.random.normal(y[3,0],y[3,1],1000)
+
+#Synthetic random sample for January
+synB=np.random.normal(y[0,0],y[0,1],1000)
+
+#graph the histograms
+plt.figure()
+plt.hist(synA)
+plt.hist(synB)
+
+plt.figure()
+plt.hist(x[3,:])
+plt.hist(x[0,:])
